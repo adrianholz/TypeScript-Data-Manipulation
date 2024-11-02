@@ -1,5 +1,6 @@
 import fetchData from "./fetchData.js";
 import normalizeTransaction from "./normalizeTransaction.js";
+import Statistics from "./Statistics.js";
 
 async function handleData() {
   const data = await fetchData<TransactionAPI[]>(
@@ -10,14 +11,26 @@ async function handleData() {
 
   const transactions = data.map(normalizeTransaction);
   fillTable(transactions);
+  fillStatistics(transactions);
 }
 
-function fillTable(transacions: Transaction[]): void {
+function fillStatistics(transactions: Transaction[]): void {
+  const data = new Statistics(transactions);
+  const totalElement = document.querySelector<HTMLSpanElement>("#total span");
+  if (totalElement) {
+    totalElement.innerText = data.total.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
+  }
+}
+
+function fillTable(transactions: Transaction[]): void {
   const table = document.querySelector("#transactions tbody");
 
   if (!table) return;
 
-  transacions.forEach((transaction) => {
+  transactions.forEach((transaction) => {
     table.innerHTML += `
       <tr>
         <td>${transaction.name}</td>
