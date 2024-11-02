@@ -1,3 +1,5 @@
+import currencyToNumber from "./currencyToNumber.js";
+
 declare global {
   type TransactionPayment = "Cartão de Crédito" | "Boleto";
   type TransactionStatus =
@@ -38,7 +40,7 @@ export default function normalizeTransaction(transaction: TransactionAPI) {
     status: transaction.Status,
     email: transaction.Email,
     currency: transaction["Valor (R$)"],
-    value: 0,
+    value: currencyToNumber(transaction["Valor (R$)"]),
     payment: transaction["Forma de Pagamento"],
     new: Boolean(transaction["Cliente Novo"]),
   };
